@@ -73,4 +73,10 @@ export class UserService {
     const { password, ...result } = saved;
     return result;
   }
+
+  async remove(id: number) {
+    const user = await this.findById(id);
+    await this.userRepository.softRemove(user);
+    return { message: 'User deleted successfully' };
+  }
 }

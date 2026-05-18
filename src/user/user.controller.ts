@@ -32,4 +32,9 @@ export class UserController {
   update(@Payload() data: { id: number; dto: UpdateUserDto }) {
     return this.userService.update(data.id, data.dto);
   }
+
+  @MessagePattern({ cmd: 'user.remove' })
+  remove(@Payload() data: { id: number }) {
+    return this.userService.remove(data.id);
+  }
 }
