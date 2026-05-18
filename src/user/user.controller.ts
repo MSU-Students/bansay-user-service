@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller()
 export class UserController {
@@ -25,5 +26,10 @@ export class UserController {
   @MessagePattern({ cmd: 'user.findById' })
   findById(@Payload() data: { id: number }) {
     return this.userService.findById(data.id);
+  }
+
+  @MessagePattern({ cmd: 'user.update' })
+  update(@Payload() data: { id: number; dto: UpdateUserDto }) {
+    return this.userService.update(data.id, data.dto);
   }
 }

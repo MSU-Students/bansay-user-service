@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserStatus } from '../enums/user-status.enum';
 
 @Injectable()
@@ -47,5 +48,29 @@ export class UserService {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) throw new NotFoundException('User not found');
     return user;
+  }
+
+  async update(id: number, dto: UpdateUserDto) {
+    const user = await this.findById(id);
+
+    if (dto.username && dto.username !== user.username) {
+      const existing = await this.userRepository.findOneBy({
+        username: dto.username,
+      });
+      if (existing) throw new ConflictException('Username already exists.');
+    }
+
+    if (dto.firstName !== undefined) user.firstName = dto.firstName;
+    if (dto.lastName !== undefined) user.lastName = dto.lastName;
+    if (dto.username !== undefined) user.username = dto.username;
+    if (dto.email !== undefined) user.email = dto.email;
+    if (dto.password !== undefined) user.password = dto.password;
+    if (dto.role !== undefined) user.role = dto.role;
+    if (dto.status !== undefined) user.status = dto.status;
+
+    const saved = await this.userRepository.save(user);
+
+    const { password, ...result } = saved;
+    return result;
   }
 }
