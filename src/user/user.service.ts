@@ -2,6 +2,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -36,5 +37,15 @@ export class UserService {
     } catch {
       throw new InternalServerErrorException('Failed to create user');
     }
+  }
+
+  async findAll() {
+    return this.userRepository.find();
+  }
+
+  async findById(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
 }

@@ -16,4 +16,14 @@ export class UserController {
   create(@Payload() dto: CreateUserDto) {
     return this.userService.create(dto);
   }
+
+  @MessagePattern({ cmd: 'user.findAll' })
+  findAll() {
+    return this.userService.findAll();
+  }
+
+  @MessagePattern({ cmd: 'user.findById' })
+  findById(@Payload() data: { id: number }) {
+    return this.userService.findById(data.id);
+  }
 }
