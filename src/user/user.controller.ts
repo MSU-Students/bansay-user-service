@@ -42,4 +42,9 @@ export class UserController {
   remove(@Payload() data: { id: number }) {
     return this.userService.remove(data.id);
   }
+
+  @MessagePattern({ cmd: 'user.validate' })
+  validate(@Payload() data: { username: string; password: string }) {
+    return this.userService.validateUser(data.username, data.password);
+  }
 }
